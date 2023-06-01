@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Tests from Kernel core docs in Ruby 2.6.3
+# Tests from IO docs in Ruby 2.6.3
 # https://ruby-doc.org/core-2.6.3/IO.html
 def spec
   binread_testfile
