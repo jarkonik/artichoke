@@ -1,3 +1,5 @@
+// TODO: Remove unwraps
+
 pub mod mruby;
 mod trampoline;
 
@@ -27,6 +29,16 @@ mod tests {
         interp
             .write_file(
                 &Path::new("testfile"),
+                std::borrow::Cow::Owned(
+                    "This is line one\nThis is line two\nThis is line three\nAnd so on...\n"
+                        .as_bytes()
+                        .to_owned(),
+                ),
+            )
+            .unwrap();
+        interp
+            .write_file(
+                &Path::new("testfile2"),
                 std::borrow::Cow::Owned(
                     "This is line one\nThis is line two\nThis is line three\nAnd so on...\n"
                         .as_bytes()

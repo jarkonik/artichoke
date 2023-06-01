@@ -413,6 +413,40 @@ macro_rules! mrb_get_args {
             _ => unreachable!("mrb_get_args should have raised"),
         }
     }};
+    ($mrb:expr, required = 2, optional = 2) => {{
+        let mut req1 = std::mem::MaybeUninit::<$crate::sys::mrb_value>::uninit();
+        let mut req2 = std::mem::MaybeUninit::<$crate::sys::mrb_value>::uninit();
+        let mut opt1 = std::mem::MaybeUninit::<$crate::sys::mrb_value>::uninit();
+        let mut opt2 = std::mem::MaybeUninit::<$crate::sys::mrb_value>::uninit();
+        let argc = $crate::sys::mrb_get_args(
+            $mrb,
+            $crate::macros::argspec::REQ2_OPT1.as_ptr(),
+            req1.as_mut_ptr(),
+            req2.as_mut_ptr(),
+            opt1.as_mut_ptr(),
+        );
+        match argc {
+            4 => {
+                let req1 = req1.assume_init();
+                let req2 = req2.assume_init();
+                let opt1 = opt1.assume_init();
+                let opt2 = opt2.assume_init();
+                (req1, req2, Some(opt1), Some(opt2))
+            }
+            3 => {
+                let req1 = req1.assume_init();
+                let req2 = req2.assume_init();
+                let opt1 = opt1.assume_init();
+                (req1, req2, Some(opt1), None)
+            }
+            2 => {
+                let req1 = req1.assume_init();
+                let req2 = req2.assume_init();
+                (req1, req2, None, None)
+            }
+            _ => unreachable!("mrb_get_args should have raised"),
+        }
+    }};
     ($mrb:expr, *args) => {{
         let mut args = std::mem::MaybeUninit::<*const $crate::sys::mrb_value>::uninit();
         let mut count = std::mem::MaybeUninit::<usize>::uninit();
