@@ -15,7 +15,7 @@ pub fn init(interp: &mut Artichoke) -> InitializeResult<()> {
     let spec = class::Spec::new("IO", IO_CSTR, None, Some(def::box_unbox_free::<IO>))?;
     class::Builder::for_spec(interp, &spec)
         .add_method("initialize", io_initialize, sys::mrb_args_req(1) | sys::mrb_args_opt(2))?
-        .add_self_method("binread", io_binread, sys::mrb_args_req(1) | sys::mrb_args_opt(2))?
+        .add_self_method("read", io_read, sys::mrb_args_req(1) | sys::mrb_args_opt(2))?
         .add_self_method("write", io_write, sys::mrb_args_req(2) | sys::mrb_args_opt(2))?
         .define()?;
     interp.def_class::<IO>(spec)?;
@@ -35,7 +35,7 @@ unsafe extern "C" fn io_initialize(mrb: *mut sys::mrb_state, slf: sys::mrb_value
     }
 }
 
-unsafe extern "C" fn io_binread(mrb: *mut sys::mrb_state, slf: sys::mrb_value) -> sys::mrb_value {
+unsafe extern "C" fn io_read(mrb: *mut sys::mrb_state, slf: sys::mrb_value) -> sys::mrb_value {
     let (name, length, offset) = mrb_get_args!(mrb, required = 1, optional = 2);
     unwrap_interpreter!(mrb, to => guard);
     let name: String = guard.try_convert_mut(Value::from(name)).unwrap();
