@@ -5,6 +5,7 @@ use std::path::Path;
 use artichoke_core::eval::Eval;
 use artichoke_core::file::File;
 use artichoke_core::load::{LoadSources, Loaded, Required};
+use artichoke_core::prelude::Io;
 use scolapasta_path::os_str_to_bytes;
 use spinoso_exception::LoadError;
 
@@ -96,7 +97,7 @@ impl LoadSources for Artichoke {
             hook(self)?;
         }
         let contents = self
-            .read_source_file_contents(path)
+            .read_file(path)
             .map_err(|_| {
                 let mut message = b"cannot load such file".to_vec();
                 if let Ok(bytes) = os_str_to_bytes(path.as_os_str()) {
@@ -145,7 +146,7 @@ impl LoadSources for Artichoke {
                         hook(self)?;
                     } else {
                         // Try to load the source at the given path
-                        if let Ok(contents) = self.read_source_file_contents(path) {
+                        if let Ok(contents) = self.read_file(path) {
                             let contents = contents.into_owned();
                             self.eval(&contents)?;
                             let state = self.state.as_deref_mut().ok_or_else(InterpreterExtractError::new)?;
@@ -160,21 +161,11 @@ impl LoadSources for Artichoke {
                 }
             }
         };
-        let contents = self.read_source_file_contents(path)?.into_owned();
+        let contents = self.read_file(path)?.into_owned();
         self.eval(contents.as_ref())?;
         let state = self.state.as_deref_mut().ok_or_else(InterpreterExtractError::new)?;
         state.load_path_vfs.mark_required(path)?;
         Ok(Required::Success)
-    }
-
-    fn read_source_file_contents<P>(&self, path: P) -> Result<Cow<'_, [u8]>, Self::Error>
-    where
-        P: AsRef<Path>,
-    {
-        let state = self.state.as_deref().ok_or_else(InterpreterExtractError::new)?;
-        let path = path.as_ref();
-        let contents = state.load_path_vfs.read_file(path)?;
-        Ok(contents.into())
     }
 }
 

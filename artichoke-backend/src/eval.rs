@@ -1,10 +1,11 @@
 use std::ffi::OsStr;
 use std::path::Path;
 
+use artichoke_core::prelude::Io;
 use scolapasta_path::os_str_to_bytes;
 use spinoso_exception::{ArgumentError, Fatal, LoadError};
 
-use crate::core::{Eval, LoadSources, Parser};
+use crate::core::{Eval, Parser};
 use crate::error::Error;
 use crate::ffi::InterpreterExtractError;
 use crate::state::parser::Context;
@@ -57,7 +58,7 @@ impl Eval for Artichoke {
             .ok_or_else(|| ArgumentError::with_message("path name contains null byte"))?;
         self.push_context(context)?;
         let code = self
-            .read_source_file_contents(file)
+            .read_file(file)
             .map_err(|err| {
                 let mut message = b"ruby: ".to_vec();
                 message.extend_from_slice(err.message().as_ref());

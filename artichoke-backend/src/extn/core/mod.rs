@@ -15,6 +15,7 @@ pub(crate) mod falseclass;
 pub(crate) mod float;
 pub(crate) mod hash;
 pub(crate) mod integer;
+pub(crate) mod io;
 pub(crate) mod kernel;
 #[cfg(feature = "core-regexp")]
 pub(crate) mod matchdata;
@@ -81,5 +82,6 @@ pub fn init(interp: &mut Artichoke) -> InitializeResult<()> {
     #[cfg(feature = "core-time")]
     time::mruby::init(interp)?;
     warning::init(interp)?;
+    io::mruby::init(interp)?;
     Ok(())
 }

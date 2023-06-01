@@ -248,20 +248,4 @@ pub trait LoadSources {
     fn require_source<P>(&mut self, path: P) -> Result<Required, Self::Error>
     where
         P: AsRef<Path>;
-
-    /// Retrieve file contents for a source file.
-    ///
-    /// Query the underlying virtual file system for the file contents of the
-    /// source file at `path`.
-    ///
-    /// # Errors
-    ///
-    /// If the underlying file system is inaccessible, an error is returned.
-    ///
-    /// If reads to the underlying file system fail, an error is returned.
-    ///
-    /// If `path` does not point to a source file, an error is returned.
-    fn read_source_file_contents<P>(&self, path: P) -> Result<Cow<'_, [u8]>, Self::Error>
-    where
-        P: AsRef<Path>;
 }
