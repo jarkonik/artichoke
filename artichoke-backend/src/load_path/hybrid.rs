@@ -1,6 +1,6 @@
-use std::borrow::Cow;
 use std::io;
 use std::path::Path;
+use std::{borrow::Cow, fs::File};
 
 #[cfg(feature = "load-path-rubylib-native-file-system-loader")]
 use artichoke_load_path::Rubylib;
@@ -212,4 +212,6 @@ impl Hybrid {
                 .or_else(|_| self.native.mark_required(path))
         }
     }
+
+    pub fn file_from_raw_fd(&self) -> io::Result<File> {}
 }

@@ -1,7 +1,9 @@
 use std::borrow::Cow;
 use std::error;
 use std::fmt;
+use std::fs::File;
 use std::io;
+use std::os::fd::RawFd;
 use std::path::Path;
 
 use crate::core::{ClassRegistry, Io, TryConvertMut};
@@ -13,6 +15,12 @@ use crate::Artichoke;
 
 impl Io for Artichoke {
     type Error = Error;
+
+    fn file_from_raw_fd(&self, fd: RawFd) -> Result<File, Self::Error> {
+        let state = self.state.as_deref().ok_or_else(InterpreterExtractError::new)?;
+        let res = state.load_path_vfs.file_from_raw_fd()?;
+        Ok(res)
+    }
 
     /// Retrieve file contents for a source file.
     ///

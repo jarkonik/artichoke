@@ -1,6 +1,6 @@
 //! I/O read and write APIs.
 
-use std::path::Path;
+use std::{fs::File, os::fd::RawFd, path::Path};
 
 use alloc::borrow::Cow;
 
@@ -8,6 +8,8 @@ use alloc::borrow::Cow;
 pub trait Io {
     /// Concrete error type for errors encountered when reading and writing.
     type Error;
+
+    fn file_from_raw_fd(&self, fd: RawFd) -> Result<File, Self::Error>;
 
     /// Retrieve file contents for a source file.
     ///

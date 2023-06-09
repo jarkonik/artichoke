@@ -2,6 +2,7 @@ use std::borrow::Cow;
 use std::collections::hash_map::Entry as HashEntry;
 use std::collections::{HashMap, HashSet};
 use std::fmt;
+use std::fs::File;
 use std::io;
 use std::path::{Path, PathBuf};
 
@@ -466,6 +467,10 @@ impl Memory {
             }
             Err(_) => Err(io::Error::new(io::ErrorKind::NotFound, ConvertBytesError::new())),
         }
+    }
+
+    pub fn file_from_raw_fd(&self) -> io::Result<File> {
+        todo!()
     }
 }
 
